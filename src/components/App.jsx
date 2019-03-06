@@ -43,12 +43,12 @@ const App = () => {
       <main className="app-main">
         <section className="app-content">
           <Switch>
-            <Route exact path="/" component={Homepage} />
+            <Route exact path={process.env.ROOT_PATH} component={Homepage} />
             {resources
               .map(([resName, resUrl], i) => (
                 <Route
                   key={i}
-                  path={'/' + resName}
+                  path={process.env.ROOT_PATH + resName}
                   render={() => (<RootResource resource={{ resName, resUrl }} />)}
                 />
               ))}

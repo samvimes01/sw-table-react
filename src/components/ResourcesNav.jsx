@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 
 
 const ResourcesNav = ({ resources }) => (
-  resources
+  resources.length !== 0
     ? (
       <ul>
         <li>
-          <NavLink to="/">home</NavLink>
+          <NavLink to={process.env.ROOT_PATH}>home</NavLink>
         </li>
         {
           resources
