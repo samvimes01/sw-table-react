@@ -6,6 +6,8 @@ import { Route, Switch } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { hot } from 'react-hot-loader';
 
+import Swapi from '../api/Swapi';
+// import ConfigProvider from './ConfigProvider';
 import ResourcesNav from './ResourcesNav';
 import Homepage from './Homepage';
 import RootResource from './RootResource';
@@ -19,8 +21,7 @@ const App = () => {
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     if (!resources.length) {
-      fetch('https://swapi.co/api/')
-        .then(data => data.json())
+      Swapi.getRoot()
         .then((result) => {
           setResources(Object.entries(result));
         });
@@ -43,12 +44,12 @@ const App = () => {
       <main className="app-main">
         <section className="app-content">
           <Switch>
-            <Route exact path={process.env.ROOT_PATH} component={Homepage} />
+            <Route exact path="/" component={Homepage} />
             {resources
               .map(([resName, resUrl], i) => (
                 <Route
                   key={i}
-                  path={process.env.ROOT_PATH + resName}
+                  path={'/' + resName}
                   render={() => (<RootResource resource={{ resName, resUrl }} />)}
                 />
               ))}

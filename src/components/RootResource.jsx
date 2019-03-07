@@ -2,11 +2,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const RootResource = ({ resource: { resName, resUrl } }) => (
-  <>
-    {resName} - {resUrl}
-  </>
-);
+import SwApi from '../api/Swapi';
+
+
+const RootResource = ({ resource: { resName, resUrl } }) => { 
+  
+  
+  return (
+    <>
+      {resName} - {resUrl}
+    </>
+  );
+};
 
 RootResource.propTypes = {
   resource: PropTypes.shape({

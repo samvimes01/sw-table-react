@@ -8,7 +8,7 @@ const ResourcesNav = ({ resources }) => (
     ? (
       <ul>
         <li>
-          <NavLink to={process.env.ROOT_PATH}>home</NavLink>
+          <NavLink to="/">home</NavLink>
         </li>
         {
           resources
