@@ -11,9 +11,20 @@ const Swapi = {
       .then(data => data.json())
   ),
 
-  getResource: (resource, id) => (
+  getResourceByUrl: resourceUrl => (
+    fetch(BASE_URL + resourceUrl)
+      .then(data => data.json())
+  ),
+
+  getResourceById: (resource, id) => (
     // eslint-disable-next-line prefer-template
     fetch(BASE_URL + resource + '/' + id)
+      .then(data => data.json())
+  ),
+
+  getSchema: resource => (
+    // eslint-disable-next-line prefer-template
+    fetch(BASE_URL + resource + '/schema')
       .then(data => data.json())
   ),
 

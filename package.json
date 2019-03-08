@@ -10,8 +10,9 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
+    "prestart": "del dist\\*.* /Q",
     "start": "cross-env NODE_ENV=development parcel src/index.html  --cert server.crt --key server.key -p 3000 --open",
-    "prebuild": "rmdir dist /s /q",
+    "prebuild": "del dist\\*.* /Q",
     "build": "cross-env NODE_ENV=production parcel build src/index.html --public-url https://samvimes01.github.io/sw-table-react/",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
@@ -20,11 +21,13 @@
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
     "@hot-loader/react-dom": "^16.8.3",
+    "file-exists": "^5.0.1",
     "lodash.debounce": "^4.0.8",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.3",
-    "react-router-dom": "^4.3.1"
+    "react-router-dom": "^4.3.1",
+    "shortid": "^2.2.14"
   },
   "alias": {
     "react-dom": "@hot-loader/react-dom"

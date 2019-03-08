@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 import React from 'react';
 
-const ResourcesNav = () => (
+const Homepage = () => (
   <>
     <h1>SPA для отображения данных swapi</h1>
     <ul>
@@ -24,4 +24,4 @@ const ResourcesNav = () => (
 );
 
 
-export default ResourcesNav;
+export default Homepage;

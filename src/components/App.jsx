@@ -38,7 +38,7 @@ const App = () => {
       </header>
 
       <nav className="app-menu">
-        <ResourcesNav resources={resources} />
+        {<ResourcesNav resources={resources} />}
       </nav>
 
       <main className="app-main">
@@ -50,7 +50,7 @@ const App = () => {
                 <Route
                   key={i}
                   path={'/' + resName}
-                  render={() => (<RootResource resource={{ resName, resUrl }} />)}
+                  render={({ match }) => (<RootResource resource={{ resName, resUrl }} match={match} />)}
                 />
               ))}
           </Switch>

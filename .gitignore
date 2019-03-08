@@ -5,3 +5,4 @@ dist/
 .idea/
 *.log
 server.*
+assets
