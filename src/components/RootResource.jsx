@@ -1,9 +1,10 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable prefer-template */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/jsx-one-expression-per-line */
-// import fs from 'fs';
-import React, { useState, useEffect, useReducer } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import React, { Component } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import Filter from './Filter';
@@ -40,7 +41,7 @@ const Table = ({ data, resource }) => {
     if (!result.oldLinkColText) {
       result.oldLinkColText = result[colWLink];
     }
-    const link = pathToItem + result[linkId];
+    const link = '/' + pathToItem + result[linkId];
     const linkText = result.oldLinkColText;
 
     result[colWLink] = <a href={link}>{linkText}</a>;
@@ -51,113 +52,113 @@ const Table = ({ data, resource }) => {
   return <Datatable items={items} columnConfig={config} />;
 };
 
-function reducer(state, action) {
-  switch (action.type) {
-    case 'notFound':
-      return { waitMessage: 'Not Found' };
-    case 'fetchResults':
-      return { resourceList: action.resList, currentQuery: state.currentQuery, currentPage: state.currentPage, redirect: false };
-    case 'filterChange':
-      return { resourceList: null, currentQuery: action.query, currentPage: 1, redirect: true };
-    case 'pageChange':
-      return { resourceList: null, currentQuery: state.currentQuery, currentPage: action.pageNum, redirect: true };
-    default:
-      throw new Error();
+class RootResource extends Component {
+  constructor(props) {
+    super(props);
+
+    const urlParams = new URLSearchParams(props.location.search);
+    const search = urlParams.get('search') || '';
+    const page = +urlParams.get('page') || 1;
+
+    this.state = {
+      currentPage: page,
+      currentQuery: search,
+      resourceList: null,
+      waitMessage: 'Loading...',
+    };
   }
-}
 
-const RootResource = ({ resource: { resName, resUrl }, match, location }) => {
-  const urlParams = new URLSearchParams(location.search);
-  const search = urlParams.get('search') || '';
-  const page = +urlParams.get('page') || 1;
+  componentDidMount() {
+    this.fetchData();
+  }
 
-  const initialState = {
-    currentPage: page,
-    currentQuery: search,
-    resourceList: null,
-    redirect: false,
-    waitMessage: 'Loading...',
-  };
+  componentDidUpdate() {
+    this.fetchData();
+  }
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  fetchData = () => {
+    const { currentQuery, currentPage, resourceList } = this.state;
+    const { resource: { resName } } = this.props;
 
-  // let waitMessage = 'Loading...';
-  // const [currentPage, setCurrentPage] = useState(page);
-  // const [currentQuery, setCurrentQuery] = useState(search);
-  // const [resourceList, setResourceList] = useState(null);
-  // const [redirect, setRedirect] = useState(false);
-  // Similar to componentDidMount and componentDidUpdate:
-  useEffect(
-    () => {
-      const { currentQuery, currentPage, resourceList } = state;
-      if (!resourceList) {
-        Swapi.getResourcesList(resName, currentQuery, currentPage).then((result) => {
-          if (result.detail === 'Not found') {
-            dispatch({ type: 'notFound' });
-          } else {
-            dispatch({ type: 'fetchResults', resList: result });
-            // setResourceList(result);
-          }
-        });
-      }
-    },
-  );
+    if (!resourceList) {
+      Swapi.getResourcesList(resName, currentQuery, currentPage).then((result) => {
+        if (result.detail === 'Not found') {
+          this.setState({
+            waitMessage: `${currentQuery} on ${currentPage} Not found`,
+          });
+        } else {
+          this.setState({
+            resourceList: result,
+          });
+        }
+      });
+    }
+  }
 
   // тут чувствую как то с редьюсером надо, но пока не умею
-  const onFilterChange = (query) => {
-    // оказывается порядок имеет значение
-    // setCurrentQuery(query);
-    // setCurrentPage(1);
-    // setResourceList(null);
-    // setRedirect(true);
-    dispatch({ type: 'filterChange', query });
+  onFilterChange = (query) => {
+    history.pushState({}, '', `?search=${query}`);
+    this.setState({
+      currentPage: 1,
+      currentQuery: query,
+      resourceList: null,
+    });
   };
 
-  const onPageChange = (pageNum) => {
-    console.log(pageNum);
-    // setCurrentPage(pageNum);
-    // setResourceList(null);
-    // setRedirect(true);
-    dispatch({ type: 'pageChange', pageNum });
-  };
-  const totalResults = state.resourceList ? state.resourceList.count : 0;
-  const paginatorProps = {
-    onPageChange,
-    currentPage: state.currentPage,
-    pagesCount: Math.ceil(totalResults / 10),
-    totalItems: totalResults,
-  };
-
-  const getRedirUrl = () => {
-    const url = `/${resName}/?search=${state.currentQuery}&page=${state.currentPage}`;
-    return url;
+  onPageChange = (pageNum) => {
+    this.setState((prevState) => {
+      if (prevState.currentQuery) {
+        history.pushState({}, '', `?search=${prevState.currentQuery}&page=${pageNum}`);
+      } else {
+        history.pushState({}, '', `?page=${pageNum}`);
+      }
+      return {
+        currentPage: pageNum,
+        resourceList: null,
+      };
+    });
   };
 
-  return (
-    <>
-      {resName} - {resUrl}
-      {state.redirect ? <Redirect to={getRedirUrl()} /> : null}
-      <br />
-      <Switch>
-        <Route exact path={`${match.path}/:id`} component={ResourcePage} />
-        <Route
-          path={`${match.path}`}
-          render={() => (
-            state.resourceList
-              ? (
-                <>
-                  <Filter query={state.currentQuery} onChange={onFilterChange} />
-                  <Table data={state.resourceList} resource={resName} />
-                  <Paginator {...paginatorProps} />
-                </>
-              )
-              : state.waitMessage
-          )}
-        />
-      </Switch>
-    </>
-  );
-};
+  render() {
+    const { resource: { resName }, match } = this.props;
+    const {
+      waitMessage,
+      resourceList,
+      currentQuery,
+      currentPage,
+    } = this.state;
+
+    const totalResults = resourceList ? resourceList.count : 0;
+    const paginatorProps = {
+      onPageChange: this.onPageChange,
+      currentPage,
+      pagesCount: Math.ceil(totalResults / 10),
+      totalItems: totalResults,
+    };
+
+    return (
+      <>
+        <Switch>
+          <Route exact path={`${match.path}/:id/`} component={ResourcePage} />
+          <Route
+            path={`${match.path}`}
+            render={() => (
+              resourceList
+                ? (
+                  <>
+                    <Filter query={currentQuery} onChange={this.onFilterChange} />
+                    <Table data={resourceList} resource={resName} />
+                    <Paginator {...paginatorProps} />
+                  </>
+                )
+                : waitMessage
+            )}
+          />
+        </Switch>
+      </>
+    );
+  }
+}
 
 Table.propTypes = {
   data: PropTypes.object,

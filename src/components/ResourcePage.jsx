@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/jsx-one-expression-per-line */
@@ -11,28 +12,35 @@ import Swapi from '../api/Swapi';
 
 const ResourcePage = ({ match }) => {
   const [resource, setResource] = useState([]);
-
+  let img = '';
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     if (!resource.length) {
-      // хак до того как контекст сделаю
       // eslint-disable-next-line prefer-destructuring
-      const url = match.url;
-      Swapi.getResourceByUrl(url.substring(1))
+      Swapi.getResourceByUrl(match.url.substring(1))
         .then((result) => {
-          setResource(Object.entries(result));
+          if (result.detail === 'Not found') {
+            setResource([[match.url, 'page not found']]);
+          } else {
+            setResource(Object.entries(result));
+          }
         });
     }
   });
 
+  if (resource.length > 0) {
+    const resName = match.url.match(/\/(\w+)\//)[1];
+    const id = match.url.match(/\/(\d+)/)[1];
+    img = `${process.env.ROOT_PATH}img/${resName}/${id}.jpg`;
+  }
+
   return (
     <>
-      {JSON.stringify(match)}
       {
         resource.length > 0
           ? (
             <>
-              <div><img src={`/img/${match.url.substring(1)}.jpg`} alt="resource img" onError={(event) => { event.target.src = '/img/placeholder.jpg'; }} /></div>
+              <div><img src={img} alt="resource img" onError={(event) => { event.target.src = `${process.env.ROOT_PATH}img/placeholder.jpg`; }} /></div>
               {resource.map(([field, name], i) => (<div key={i}>{field}: {name}</div>))}
             </>
           )
@@ -41,7 +49,6 @@ const ResourcePage = ({ match }) => {
     </>
   );
 };
-//  { resource.map((res) => (<div>res[0]</div>))} }
 
 ResourcePage.propTypes = {
   match: PropTypes.object.isRequired,
