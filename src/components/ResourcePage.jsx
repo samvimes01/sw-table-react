@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/jsx-one-expression-per-line */
 import React, { useState, useEffect } from 'react';
@@ -19,7 +20,6 @@ const ResourcePage = ({ match }) => {
       const url = match.url;
       Swapi.getResourceByUrl(url.substring(1))
         .then((result) => {
-          console.dir(Object.entries(result));
           setResource(Object.entries(result));
         });
     }
@@ -32,7 +32,7 @@ const ResourcePage = ({ match }) => {
         resource.length > 0
           ? (
             <>
-              <div><img src={'/img/'+match.url.substring(1)+'.jpg'} alt="resource img" /></div>
+              <div><img src={`/img/${match.url.substring(1)}.jpg`} alt="resource img" onError={(event) => { event.target.src = '/img/placeholder.jpg'; }} /></div>
               {resource.map(([field, name], i) => (<div key={i}>{field}: {name}</div>))}
             </>
           )

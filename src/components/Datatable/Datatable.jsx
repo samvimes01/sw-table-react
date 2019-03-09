@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
@@ -16,12 +17,13 @@ export default class Datatable extends Component {
     selectedItemsIds: [],
     isAllSelected: false,
     sortKey: '',
-    sortOrder: 'asc',
+    sortOrder: 'desc',
   }
 
   getData() {
     const { sortKey, sortOrder } = this.state;
     const { items } = this.props;
+
     if (!items) {
       return [];
     }
@@ -167,13 +169,7 @@ export default class Datatable extends Component {
 
 
 Datatable.propTypes = {
-  items: PropTypes.arrayOf(PropTypes.shape({
-    age: PropTypes.number,
-    id: PropTypes.string.isRequired,
-    imageUrl: PropTypes.string,
-    name: PropTypes.string,
-    snippet: PropTypes.string,
-  })),
+  items: PropTypes.array,
   columnConfig: PropTypes.shape({
     title: PropTypes.string,
     isSortable: PropTypes.bool,

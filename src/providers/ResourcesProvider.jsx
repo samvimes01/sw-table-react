@@ -85,16 +85,18 @@ const ConfigProvider = {
       img: {
         title: 'image',
       },
+      link: `${resource}/:id`,
     };
     visibleFields[resource].forEach((field) => {
       result[field] = {
-        title: field,
+        title: field.replace('_', ' '),
         isSortable: true,
         isSearchable: searchableFields[resource].includes(field),
       };
     });
     return result;
   },
+  getColWithLinks: resource => (resource === 'films' ? 'title' : 'name'),
 };
 
 SchemaParser.propTypes = {

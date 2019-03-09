@@ -5,8 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import shortid from 'shortid';
-import fileExists from 'file-exists';
+// import shortid from 'shortid';
 
 // import Filter from './Filter';
 // import Paginator from './Paginator';
@@ -20,15 +19,36 @@ const Table = ({ data, resource }) => {
   if (!data) {
     return <>Loading...</>;
   }
+  const { getConfig, getColWithLinks } = ConfigProvider;
+  // получаем конфиг для datatable и колонку в которой будут ссылки
+  const config = getConfig(resource);
+  const colWLink = getColWithLinks(resource);
+  const { link: linkCfg } = config;
+  delete config.link;
+  // удалим из конфига паттерн ссылки - это не для рендера,
+  // но из него надо вытянуть путь и название поля из которго брать ссылку
+  // лишняя работа, т.к. в результатах есть url на каждый item, но таково условие
+  const regex = RegExp(/(.+\/):(\w+$)/, 'g');
+  // можно и split(':') но не хочу
+  const pathNlinkId = regex.exec(linkCfg);
+  const pathToItem = pathNlinkId[pathNlinkId.length - 2];
+  const linkId = pathNlinkId[pathNlinkId.length - 1];
 
+  // апи выдает результат без картинки, без id  и без ссылки - добавляем их
   const items = data.results.map((result) => {
-    result.id = shortid.generate();
-    const resApiId = result.url.slice(-2, -1);
-    const img = `/img/${resource}/${resApiId}.jpg`;
-    result.img = <img src={img} alt="resource img" onError={(event) => {event.target.src = '/img/placeholder.jpg'}} />;
+    const id = result.url.slice(-2, -1);
+    const img = `/img/${resource}/${id}.jpg`;
+
+    result.id = id;
+    result.img = <img src={img} alt="resource img" onError={(event) => { event.target.src = '/img/placeholder.jpg'; }} />;
+
+    const link = pathToItem + result[linkId];
+    const linkText = result[colWLink];
+
+    result[colWLink] = <a href={link}>{linkText}</a>;
+
     return result;
   });
-  const config = ConfigProvider.getConfig(resource);
 
   return <Datatable items={items} columnConfig={config} />;
 };

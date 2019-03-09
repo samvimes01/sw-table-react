@@ -13,6 +13,7 @@
 .tabledata thead th {
   min-width: 80px;
   height: 25px;
+  text-transform: capitalize;
 }
 
 .unsorted, .asc, .desc {
