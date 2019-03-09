@@ -6,8 +6,9 @@ const Swapi = {
       .then(data => data.json())
   ),
 
-  getResourcesList: resource => (
-    fetch(BASE_URL + resource)
+  getResourcesList: (resource, query, page) => (
+    // eslint-disable-next-line prefer-template
+    fetch(BASE_URL + resource + '/?search=' + query + '&page=' + page)
       .then(data => data.json())
   ),
 
@@ -21,7 +22,7 @@ const Swapi = {
     fetch(BASE_URL + resource + '/' + id)
       .then(data => data.json())
   ),
-
+/* лишнее
   getSearchResults: (resource, query) => (
     // eslint-disable-next-line prefer-template
     fetch(BASE_URL + resource + '/?search=' + query)
@@ -56,7 +57,7 @@ const Swapi = {
 
   hasPrev: resObj => (
     resObj.previous
-  ),
+  ), */
 };
 
 export default Swapi;

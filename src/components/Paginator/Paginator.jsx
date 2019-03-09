@@ -4,24 +4,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import '../../styles/Paginator.css';
 
-import PageContext from '../../providers/PageContext';
-
 const Paginator = (props) => {
+  const perPage = 10;
   const {
-    selector,
+    onPageChange,
+    currentPage,
+    pagesCount,
+    totalItems,
     info,
   } = props;
 
-  const getStartItem = (currentPage, perPage) => (
+  const getStartItem = () => (
     (currentPage - 1) * perPage
   );
 
-  const getEndItem = (currentPage, perPage, totalItems) => {
-    const startIndex = getStartItem(currentPage, perPage);
+  const getEndItem = () => {
+    const startIndex = getStartItem();
     return Math.min(startIndex + perPage, totalItems);
   };
 
-  const getPages = (pagesCount) => {
+  const getPages = () => {
     const pages = [];
 
     for (let i = 1; i <= pagesCount; i++) {
@@ -31,77 +33,70 @@ const Paginator = (props) => {
     return pages;
   };
 
-  const getCorrectPage = (page, pagesCount) => (
+  const getCorrectPage = page => (
     Math.min(
       Math.max(1, page), pagesCount,
     )
   );
 
-  const getPrevPage = (currentPage, pagesCount) => (
-    getCorrectPage(currentPage - 1, pagesCount)
+  const getPrevPage = () => (
+    getCorrectPage(currentPage - 1)
   );
 
-  const getNextPage = (currentPage, pagesCount) => (
-    getCorrectPage(currentPage + 1, pagesCount)
+  const getNextPage = () => (
+    getCorrectPage(currentPage + 1)
   );
 
   return (
-    <PageContext.Consumer>
-      {({
-        onPageChange,
-        onPerPageChange,
-        perPage,
-        currentPage,
-        pagesCount,
-        totalItems,
-      }) => (
-        <div className="paginator">
-          {selector
-            ? (
-              <select value={perPage} onChange={event => onPerPageChange(+event.target.value)}>
-                {[3, 5, 10, 20].map(option => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            )
-            : ''
-          }
+    <div className="paginator">
+      <button
+        type="button"
+        className={currentPage === 1 ? 'paginator__page-button disabled' : 'paginator__page-button'}
+        onClick={() => onPageChange(getPrevPage())}
+        disabled={currentPage === 1}
+      >
+        {'<-'}
+      </button>
+      {getPages().map(page => (
+        <button
+          key={page}
+          type="button"
+          onClick={() => onPageChange(getCorrectPage(page))}
+          className={(page === currentPage) ? 'paginator__page-button paginator__page-button--current disabled' : 'paginator__page-button'}
+          disabled={currentPage === page}
+        >
+          { page }
+        </button>
+      ))}
+      <button
+        type="button"
+        className={currentPage === pagesCount ? 'paginator__page-button disabled' : 'paginator__page-button'}
+        onClick={() => onPageChange(getNextPage())}
+        disabled={currentPage === pagesCount}
+      >
+        {'->'}
+      </button>
 
-          <button type="button" className="paginator__page-button" onClick={() => onPageChange(getPrevPage(currentPage, pagesCount))}>{'<-'}</button>
-          {getPages(pagesCount).map(page => (
-            <button
-              key={page}
-              type="button"
-              onClick={() => onPageChange(getCorrectPage(page, pagesCount))}
-              className={(page === currentPage) ? 'paginator__page-button paginator__page-button--current' : 'paginator__page-button'}
-            >
-              { page }
-            </button>
-          ))}
-          <button type="button" className="paginator__page-button" onClick={() => onPageChange(getNextPage(currentPage, pagesCount))}>{'->'}</button>
-
-          {info
-            ? (
-              <span data-element="page-info" className="paginator__page-info">
-                  Show {getStartItem(currentPage, perPage) + 1} to {getEndItem(currentPage, perPage, totalItems)} phones from {totalItems}
-              </span>
-            )
-            : ''
-          }
-        </div>
-      )}
-    </PageContext.Consumer>
+      {info
+        ? (
+          <span data-element="page-info" className="paginator__page-info">
+              Show {getStartItem() + 1} to {getEndItem()} phones from {totalItems}
+          </span>
+        )
+        : ''
+      }
+    </div>
   );
 };
 
 Paginator.propTypes = {
-  selector: PropTypes.bool,
+  onPageChange: PropTypes.func.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  pagesCount: PropTypes.number.isRequired,
+  totalItems: PropTypes.number.isRequired,
   info: PropTypes.bool,
 };
 Paginator.defaultProps = {
-  selector: false,
   info: false,
 };
 
