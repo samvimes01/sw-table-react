@@ -2,24 +2,27 @@
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/jsx-one-expression-per-line */
 // import fs from 'fs';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 // import shortid from 'shortid';
 
-// import Filter from './Filter';
+import Filter from './Filter';
 // import Paginator from './Paginator';
 // import PageContext from '../providers/PageContext';
 import Datatable from './Datatable';
-import Swapi from '../api/Swapi';
 import ResourcePage from './ResourcePage';
-import ConfigProvider from '../providers/ResourcesProvider';
+
+import Swapi from '../api/Swapi';
+import { getConfig, getColWithLinks } from '../api/ConfigBuilder';
+
+import { SwapiContext } from '../providers/ResourcesProvider';
 
 const Table = ({ data, resource }) => {
   if (!data) {
     return <>Loading...</>;
   }
-  const { getConfig, getColWithLinks } = ConfigProvider;
+
   // получаем конфиг для datatable и колонку в которой будут ссылки
   const config = getConfig(resource);
   const colWLink = getColWithLinks(resource);
@@ -28,22 +31,29 @@ const Table = ({ data, resource }) => {
   // удалим из конфига паттерн ссылки - это не для рендера,
   // но из него надо вытянуть путь и название поля из которго брать ссылку
   // лишняя работа, т.к. в результатах есть url на каждый item, но таково условие
-  const regex = RegExp(/(.+\/):(\w+$)/, 'g');
   // можно и split(':') но не хочу
-  const pathNlinkId = regex.exec(linkCfg);
-  const pathToItem = pathNlinkId[pathNlinkId.length - 2];
-  const linkId = pathNlinkId[pathNlinkId.length - 1];
+  const pathNlinkId = linkCfg.match(/(.+\/):(\w+$)/);
+  const pathToItem = pathNlinkId[1];
+  const linkId = pathNlinkId[2];
+
+  // const regex = RegExp(/(.+\/):(\w+$)/, 'g');
+  // const pathNlinkId = regex.exec(linkCfg);
+  // const pathToItem = pathNlinkId[pathNlinkId.length - 2];
+  // const linkId = pathNlinkId[pathNlinkId.length - 1];
 
   // апи выдает результат без картинки, без id  и без ссылки - добавляем их
   const items = data.results.map((result) => {
-    const id = result.url.slice(-2, -1);
+    const id = result.url.match(/\/(\d+)\/$/)[1];
     const img = `/img/${resource}/${id}.jpg`;
 
     result.id = id;
     result.img = <img src={img} alt="resource img" onError={(event) => { event.target.src = '/img/placeholder.jpg'; }} />;
-
+    // prevent link column data from anchor nesting on rerender
+    if (!result.oldLinkColText) {
+      result.oldLinkColText = result[colWLink];
+    }
     const link = pathToItem + result[linkId];
-    const linkText = result[colWLink];
+    const linkText = result.oldLinkColText;
 
     result[colWLink] = <a href={link}>{linkText}</a>;
 
@@ -62,12 +72,25 @@ const Table = ({ data, resource }) => {
   <Paginator info />
 </PageContext.Provider> */
 const RootResource = ({ resource: { resName, resUrl }, match }) => {
-  const [resourceList, setResourceList] = useState(null);
+  const context = useContext(SwapiContext);
+  const { currentQuery, onFilterChange } = context;
 
+  const [resourceList, setResourceList] = useState(null);
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     if (!resourceList) {
       Swapi.getResourcesList(resName).then((result) => {
+        setResourceList(result);
+      });
+    }
+  });
+
+  const [prevQuery, setPrevQuery] = useState(null);
+  useEffect(() => {
+    if (currentQuery && currentQuery !== prevQuery) {
+      Swapi.getSearchResults(resName, currentQuery).then((result) => {
+        // оказывается порядок имеет значение - иначе 2 раза запрос к апи
+        setPrevQuery(currentQuery);
         setResourceList(result);
       });
     }
@@ -90,7 +113,12 @@ const RootResource = ({ resource: { resName, resUrl }, match }) => {
       <Switch>
         <Route exact path={`${match.path}/:id`} component={ResourcePage} />
         <Route
-          render={() => <Table data={resourceList} resource={resName} />}
+          render={() => (
+            <>
+              <Filter query={currentQuery} onChange={onFilterChange} />
+              <Table data={resourceList} resource={resName} />
+            </>
+          )}
         />
       </Switch>
     </>

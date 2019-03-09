@@ -7,7 +7,7 @@ import { Route, Switch } from 'react-router-dom';
 import { hot } from 'react-hot-loader';
 
 import Swapi from '../api/Swapi';
-// import ConfigProvider from './ConfigProvider';
+import { SwapiProvider } from '../providers/ResourcesProvider';
 import ResourcesNav from './ResourcesNav';
 import Homepage from './Homepage';
 import RootResource from './RootResource';
@@ -43,17 +43,20 @@ const App = () => {
 
       <main className="app-main">
         <section className="app-content">
-          <Switch>
-            <Route exact path="/" component={Homepage} />
-            {resources
-              .map(([resName, resUrl], i) => (
-                <Route
-                  key={i}
-                  path={'/' + resName}
-                  render={({ match }) => (<RootResource resource={{ resName, resUrl }} match={match} />)}
-                />
-              ))}
-          </Switch>
+          <SwapiProvider>
+            <Switch>
+              <Route exact path="/" component={Homepage} />
+              {resources
+                .map(([resName, resUrl], i) => (
+                  <Route
+                    key={i}
+                    path={'/' + resName}
+                    render={({ match }) => (<RootResource resource={{ resName, resUrl }} match={match} />)}
+                  />
+                ))}
+            </Switch>
+          </SwapiProvider>
+
         </section>
 
       </main>

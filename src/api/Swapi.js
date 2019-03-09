@@ -22,6 +22,12 @@ const Swapi = {
       .then(data => data.json())
   ),
 
+  getSearchResults: (resource, query) => (
+    // eslint-disable-next-line prefer-template
+    fetch(BASE_URL + resource + '/?search=' + query)
+      .then(data => data.json())
+  ),
+
   getSchema: resource => (
     // eslint-disable-next-line prefer-template
     fetch(BASE_URL + resource + '/schema')

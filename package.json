@@ -21,6 +21,7 @@
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
     "@hot-loader/react-dom": "^16.8.3",
+    "eslint-plugin-react-hooks": "^1.5.0",
     "file-exists": "^5.0.1",
     "lodash.debounce": "^4.0.8",
     "prop-types": "^15.7.2",
