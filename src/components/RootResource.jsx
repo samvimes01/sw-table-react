@@ -2,7 +2,7 @@
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/jsx-one-expression-per-line */
 // import fs from 'fs';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -51,21 +51,53 @@ const Table = ({ data, resource }) => {
   return <Datatable items={items} columnConfig={config} />;
 };
 
+function reducer(state, action) {
+  switch (action.type) {
+    case 'notFound':
+      return { waitMessage: 'Not Found' };
+    case 'fetchResults':
+      return { resourceList: action.resList, currentQuery: state.currentQuery, currentPage: state.currentPage, redirect: false };
+    case 'filterChange':
+      return { resourceList: null, currentQuery: action.query, currentPage: 1, redirect: true };
+    case 'pageChange':
+      return { resourceList: null, currentQuery: state.currentQuery, currentPage: action.pageNum, redirect: true };
+    default:
+      throw new Error();
+  }
+}
+
 const RootResource = ({ resource: { resName, resUrl }, match, location }) => {
   const urlParams = new URLSearchParams(location.search);
   const search = urlParams.get('search') || '';
   const page = +urlParams.get('page') || 1;
 
-  const [currentPage, setCurrentPage] = useState(page);
-  const [currentQuery, setCurrentQuery] = useState(search);
-  const [resourceList, setResourceList] = useState(null);
-  const [redirect, setRedirect] = useState(false);
+  const initialState = {
+    currentPage: page,
+    currentQuery: search,
+    resourceList: null,
+    redirect: false,
+    waitMessage: 'Loading...',
+  };
+
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // let waitMessage = 'Loading...';
+  // const [currentPage, setCurrentPage] = useState(page);
+  // const [currentQuery, setCurrentQuery] = useState(search);
+  // const [resourceList, setResourceList] = useState(null);
+  // const [redirect, setRedirect] = useState(false);
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(
     () => {
+      const { currentQuery, currentPage, resourceList } = state;
       if (!resourceList) {
         Swapi.getResourcesList(resName, currentQuery, currentPage).then((result) => {
-          setResourceList(result);
+          if (result.detail === 'Not found') {
+            dispatch({ type: 'notFound' });
+          } else {
+            dispatch({ type: 'fetchResults', resList: result });
+            // setResourceList(result);
+          }
         });
       }
     },
@@ -74,49 +106,52 @@ const RootResource = ({ resource: { resName, resUrl }, match, location }) => {
   // тут чувствую как то с редьюсером надо, но пока не умею
   const onFilterChange = (query) => {
     // оказывается порядок имеет значение
-    setCurrentQuery(query);
-    setCurrentPage(1);
-    setResourceList(null);
-    setRedirect(true);
+    // setCurrentQuery(query);
+    // setCurrentPage(1);
+    // setResourceList(null);
+    // setRedirect(true);
+    dispatch({ type: 'filterChange', query });
   };
 
   const onPageChange = (pageNum) => {
     console.log(pageNum);
-    setCurrentPage(pageNum);
-    setResourceList(null);
-    setRedirect(true);
+    // setCurrentPage(pageNum);
+    // setResourceList(null);
+    // setRedirect(true);
+    dispatch({ type: 'pageChange', pageNum });
   };
-  const totalResults = resourceList ? resourceList.count : 0;
+  const totalResults = state.resourceList ? state.resourceList.count : 0;
   const paginatorProps = {
     onPageChange,
-    currentPage,
+    currentPage: state.currentPage,
     pagesCount: Math.ceil(totalResults / 10),
     totalItems: totalResults,
   };
+
   const getRedirUrl = () => {
-    const url = `/${resName}/?search=${currentQuery}&page=${currentPage}`;
+    const url = `/${resName}/?search=${state.currentQuery}&page=${state.currentPage}`;
     return url;
   };
 
   return (
     <>
       {resName} - {resUrl}
-      {redirect ? <Redirect to={getRedirUrl()} /> : null}
+      {state.redirect ? <Redirect to={getRedirUrl()} /> : null}
       <br />
       <Switch>
         <Route exact path={`${match.path}/:id`} component={ResourcePage} />
         <Route
           path={`${match.path}`}
           render={() => (
-            resourceList
+            state.resourceList
               ? (
                 <>
-                  <Filter query={currentQuery} onChange={onFilterChange} />
-                  <Table data={resourceList} resource={resName} />
+                  <Filter query={state.currentQuery} onChange={onFilterChange} />
+                  <Table data={state.resourceList} resource={resName} />
                   <Paginator {...paginatorProps} />
                 </>
               )
-              : 'Loading...'
+              : state.waitMessage
           )}
         />
       </Switch>
