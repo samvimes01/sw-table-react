@@ -1,5 +1,6 @@
 .app {
-  text-align: center;
+  display: grid;
+  grid-template-rows: 10vh minmax(80vh,auto) minmax(10vh,auto);
 }
 
 .app-logo {
@@ -10,9 +11,8 @@
 
 .app-header {
   background-color: #282c34;
-  min-height: 10vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
@@ -20,20 +20,20 @@
 }
 
 .app-main {
-  background-color: #f3f5dc;
-  min-height: 75vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 2vmax;
-  line-height: 0.5vmax;
+  flex-wrap: nowrap;
+  flex: 1 1 200px;
+  justify-content: center;
+  align-items: flex-start;
+  font-size: calc(10px + 1vmin);
   color: #000;
+  background: #edf3ff;
+  padding: 0px 5px;
 }
 
-.app-footer {
-  min-height: 10vh;
-  background-color: #1c1f27;
-  color: rgb(200, 252, 252);
+.app-content {
+  min-width: 400px;
+  padding: 5px 0px;
 }
 
 @keyframes App-logo-spin {

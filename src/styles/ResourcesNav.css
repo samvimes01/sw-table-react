@@ -1,0 +1,28 @@
+.app-menu {
+}
+
+.app-menu ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+  width: 100%;
+  box-shadow: -3px 3px 3px 0px #464e00;
+
+}
+
+.app-menu ul li {
+  text-transform: capitalize;
+  padding: 5px 5px 5px;
+}
+
+.app-menu ul li a {
+  color: #464e00;
+  font-weight: bold;
+  padding: 2px;
+}
+
+.app-menu ul li a.active {
+  background: #e3eafa;
+  border-radius: 5px;
+  box-shadow: 2px 3px 5px 0px #464e00;
+}
