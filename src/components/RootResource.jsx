@@ -41,7 +41,7 @@ const Table = ({ data, resource }) => {
     if (!result.oldLinkColText) {
       result.oldLinkColText = result[colWLink];
     }
-    const link = '#/' + pathToItem + result[linkId];
+    const link = '/' + pathToItem + result[linkId];
     const linkText = result.oldLinkColText;
 
     result[colWLink] = <a href={link}>{linkText}</a>;
