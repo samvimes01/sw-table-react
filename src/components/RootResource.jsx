@@ -33,10 +33,10 @@ const Table = ({ data, resource }) => {
   // апи выдает результат без картинки, без id  и без ссылки - добавляем их
   const items = data.results.map((result) => {
     const id = result.url.match(/\/(\d+)\/$/)[1];
-    const img = `${process.env.ROOT_PATH}img/${resource}/${id}.jpg`;
+    const img = `/img/${resource}/${id}.jpg`;
 
     result.id = id;
-    result.img = <img src={img} alt="resource img" onError={(event) => { event.target.src = `${process.env.ROOT_PATH}img/placeholder.jpg`; }} />;
+    result.img = <img src={img} alt="resource img" onError={(event) => { event.target.src = '/img/placeholder.jpg'; }} />;
     // prevent link column data from anchor nesting on rerender
     if (!result.oldLinkColText) {
       result.oldLinkColText = result[colWLink];
@@ -97,7 +97,7 @@ class RootResource extends Component {
 
   // тут чувствую как то с редьюсером надо, но пока не умею
   onFilterChange = (query) => {
-    history.pushState({}, '', `#/?search=${query}&page=${1}`);
+    history.pushState({}, '', `/?search=${query}&page=${1}`);
     this.setState({
       currentPage: 1,
       currentQuery: query,
@@ -108,9 +108,9 @@ class RootResource extends Component {
   onPageChange = (pageNum) => {
     this.setState((prevState) => {
       if (prevState.currentQuery) {
-        history.pushState({}, '', `#/?search=${prevState.currentQuery}&page=${pageNum}`);
+        history.pushState({}, '', `/?search=${prevState.currentQuery}&page=${pageNum}`);
       } else {
-        history.pushState({}, '', `#/?page=${pageNum}`);
+        history.pushState({}, '', `/?page=${pageNum}`);
       }
       return {
         currentPage: pageNum,

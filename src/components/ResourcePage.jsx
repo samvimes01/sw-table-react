@@ -31,7 +31,7 @@ const ResourcePage = ({ match }) => {
   if (resource.length > 0) {
     const resName = match.url.match(/\/(\w+)\//)[1];
     const id = match.url.match(/\/(\d+)/)[1];
-    img = `${process.env.ROOT_PATH}img/${resName}/${id}.jpg`;
+    img = `/img/${resName}/${id}.jpg`;
   }
 
   return (
@@ -40,7 +40,7 @@ const ResourcePage = ({ match }) => {
         resource.length > 0
           ? (
             <>
-              <div><img src={img} alt="resource img" onError={(event) => { event.target.src = `${process.env.ROOT_PATH}img/placeholder.jpg`; }} /></div>
+              <div><img src={img} alt="resource img" onError={(event) => { event.target.src = '/img/placeholder.jpg'; }} /></div>
               {resource.map(([field, name], i) => (<div key={i}>{field}: {name}</div>))}
             </>
           )
