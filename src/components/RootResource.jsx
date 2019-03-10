@@ -99,7 +99,7 @@ class RootResource extends Component {
   onFilterChange = (query) => {
     const { resource: { resName } } = this.props;
 
-    history.pushState({}, '', `${resName}/?search=${query}&page=${1}`);
+    history.pushState({}, '', `?search=${query}&page=${1}`);
     this.setState({
       currentPage: 1,
       currentQuery: query,
@@ -112,9 +112,9 @@ class RootResource extends Component {
 
     this.setState((prevState) => {
       if (prevState.currentQuery) {
-        history.pushState({}, '', `${resName}?search=${prevState.currentQuery}&page=${pageNum}`);
+        history.pushState({}, '', `?search=${prevState.currentQuery}&page=${pageNum}`);
       } else {
-        history.pushState({}, '', `${resName}?page=${pageNum}`);
+        history.pushState({}, '', `?page=${pageNum}`);
       }
       return {
         currentPage: pageNum,

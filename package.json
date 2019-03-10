@@ -10,7 +10,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "prestart": "del dist\\*.* /Q",
+    "prestart": "del dist\\*.html dist\\*.css dist\\*.js dist\\*.map dist\\*.svg /Q",
     "start": "cross-env NODE_ENV=development parcel src/index.html  --cert server.crt --key server.key -p 3000",
     "prebuild": "del dist\\*.html dist\\*.css dist\\*.js dist\\*.map dist\\*.svg /Q",
     "build": "cross-env NODE_ENV=production parcel build src/index.html",
