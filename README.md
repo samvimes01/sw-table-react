@@ -1,7 +1,7 @@
 # Starwars datatable react
 
 1. [Working version](https://friendly-mayer-4e877f.netlify.com/)
-2. [Pull request](https://github.com/samvimes01/sw-table-react//pull/1/files)
+2. [Pull request](https://github.com/samvimes01/sw-table-react//pull/2/files)
 
 ## Star Wars Api (swapi) SPA using react
 
