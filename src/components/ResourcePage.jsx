@@ -24,7 +24,7 @@ const TableLink = ({ urlArray }) => {
 
     return Swapi.getResourceByUrl(url).then((data) => {
       const title = data.name || data.title;
-      return { img, title, url };
+      return { img, title, url: `/${resName}/${id}/` };
     });
   };
 
