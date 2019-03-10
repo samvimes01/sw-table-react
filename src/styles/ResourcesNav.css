@@ -1,3 +1,29 @@
-.active {
-  background: #999;
+.app-menu {
+  grid-column: 1;
+}
+
+.app-menu ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+  width: 100%;
+  border-bottom: 4px solid gold;
+  border-left: 4px solid gold;
+}
+
+.app-menu ul li {
+  text-transform: capitalize;
+  padding: 5px 5px 5px;
+}
+
+.app-menu ul li a {
+  color: #464e00;
+  font-weight: bold;
+  padding: 2px;
+}
+
+.app-menu ul li a.active {
+  background: #fbffd3;
+  border: 1px solid #fc7a10;
+  border-radius: 5px;
 }

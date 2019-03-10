@@ -5,10 +5,15 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-// import PageContext from '../providers/PageContext';
-// import Datatable from './Datatable';
 import Swapi from '../api/Swapi';
+import '../styles/ResourcePage.css';
 
+const invisibleFields = ['created', 'edited', 'url'];
+
+// const Table = async (urlArray) => {
+// //   // await Swapi.getResourceByUrl(url);
+//   return 'I need some more time to implement tjis block';
+// };
 
 const ResourcePage = ({ match }) => {
   const [resource, setResource] = useState([]);
@@ -39,10 +44,30 @@ const ResourcePage = ({ match }) => {
       {
         resource.length > 0
           ? (
-            <>
-              <div><img src={img} alt="resource img" onError={(event) => { event.target.src = '/img/placeholder.jpg'; }} /></div>
-              {resource.map(([field, name], i) => (<div key={i}>{field}: {name}</div>))}
-            </>
+            <div className="res-page">
+              <div className="res-img"><img src={img} alt="resource img" onError={(event) => { event.target.src = '/img/placeholder.jpg'; }} /></div>
+              {resource
+                .filter(([field]) => !invisibleFields.includes(field))
+                .map(([field, value], i) => (
+                  <div key={i} className="res-field">
+
+                    {(Array.isArray(value))
+                      ? (
+                        <div className="res-field-list">
+                          <div className="res-field-name">{field.replace('_', ' ')}:</div>
+                          <span className="res-field-value">{value}</span>
+                        </div>
+                      )
+                      : (
+                        <div className="res-field-item">
+                          <div className="res-field-name">{field.replace(/_/g, ' ')}: </div>
+                          <div className="res-field-value">{value}</div>
+                        </div>
+                      )
+                    }
+                  </div>
+                ))}
+            </div>
           )
           : 'Loading...'
       }

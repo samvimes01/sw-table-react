@@ -9,6 +9,7 @@ import { hot } from 'react-hot-loader';
 import Swapi from '../api/Swapi';
 import ResourcesNav from './ResourcesNav';
 import Homepage from './Homepage';
+import Footer from './Footer';
 import RootResource from './RootResource';
 
 import logo from '../img/logo.svg';
@@ -30,8 +31,8 @@ const App = () => {
   return (
     <div className="app">
       <header className="app-header">
+        <img src={logo} className="app-logo" alt="logo" />
         <p>
-          <img src={logo} className="app-logo" alt="logo" />
           SWAPI datatable
         </p>
       </header>
@@ -57,9 +58,7 @@ const App = () => {
 
       </main>
 
-      <footer className="app-footer">
-        footer
-      </footer>
+      <Footer />
     </div>
   );
 };

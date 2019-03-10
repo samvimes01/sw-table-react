@@ -1,0 +1,64 @@
+.app-footer {
+  grid-column: span 12;
+  background-color: #1c1f27;
+  color: rgb(200, 252, 252);
+  padding: 15px 0px;
+  display: grid;
+  grid-gap: 6px 20px;
+  grid-template-areas: 
+    ". cpr cm . i ."
+    ". s   m  . l ."
+    ". a   .  . g ."
+    ". as  .  . b .";
+
+  justify-content: center;
+  /* align-items: center; */
+}
+
+.app-footer .box.me {
+  grid-area: i;
+ }
+ 
+ .app-footer .box.api {
+  grid-area: a;
+ }
+ 
+ .app-footer .box.mate {
+  grid-area: m;
+ }
+  
+ .app-footer .box.lnd {
+  grid-area: l;
+ }
+  
+ .app-footer .box.gh {
+  grid-area: g;
+ }
+  
+.app-footer .box.bitb {
+  grid-area: b;
+ }
+
+.app-footer .box.swars {
+  grid-area: s;
+ }
+
+.app-footer .box.assets {
+  grid-area: as;
+ }
+
+.app-footer .box.company {
+  grid-area: cm;
+ }
+
+.app-footer .box.coprght {
+  grid-area: cpr;
+ }
+
+.app-footer a {
+ color: rgb(200, 252, 138);
+}
+
+.app-footer a:hover {
+  color: rgb(144, 180, 180);
+}
