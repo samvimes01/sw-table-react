@@ -97,8 +97,6 @@ class RootResource extends Component {
 
   // тут чувствую как то с редьюсером надо, но пока не умею
   onFilterChange = (query) => {
-    const { resource: { resName } } = this.props;
-
     history.pushState({}, '', `?search=${query}&page=${1}`);
     this.setState({
       currentPage: 1,
@@ -108,8 +106,6 @@ class RootResource extends Component {
   };
 
   onPageChange = (pageNum) => {
-    const { resource: { resName } } = this.props;
-
     this.setState((prevState) => {
       if (prevState.currentQuery) {
         history.pushState({}, '', `?search=${prevState.currentQuery}&page=${pageNum}`);

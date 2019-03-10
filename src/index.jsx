@@ -7,7 +7,7 @@ import App from './components/App';
 
 function renderApp() {
   render(
-    <BrowserRouter basename={process.env.ROOT_PATH}>
+    <BrowserRouter>
       <App />
     </BrowserRouter>,
 

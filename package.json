@@ -1,7 +1,7 @@
 {
   "name": "sw-table-react",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "My awesome app",
   "repository": "git@github.com:samvimes01/sw-table-react/.git",
   "authors": [
@@ -10,13 +10,13 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "prestart": "del dist\\*.html dist\\*.css dist\\*.js dist\\*.map dist\\*.svg /Q",
+    "prestart": "npm run dist:cleanAndCopy",
     "start": "cross-env NODE_ENV=development parcel src/index.html  --cert server.crt --key server.key -p 3000",
-    "prebuild": "del dist\\*.html dist\\*.css dist\\*.js dist\\*.map dist\\*.svg /Q",
+    "prebuild": "dist:cleanAndCopy",
     "build": "cross-env NODE_ENV=production parcel build src/index.html",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-    "test": "eslint src/ --ext .js --ext .jsx"
+    "test": "eslint src/ --ext .js --ext .jsx",
+    "dist:cleanAndCopy": "del dist\\*.html dist\\*.css dist\\*.js dist\\*.map dist\\*.svg /Q && npm run assets:copy",
+    "assets:copy": "xcopy assets dist /S /Y /I /D"
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
@@ -44,7 +44,6 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.0",
-    "gh-pages": "^2.0.1",
     "parcel-bundler": "^1.11.0",
     "react-hot-loader": "^4.7.2"
   }
