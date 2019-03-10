@@ -1,6 +1,5 @@
 .app {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
   grid-template-rows: 10vh minmax(80vh,auto) minmax(10vh,auto);
 }
 
@@ -11,7 +10,6 @@
 }
 
 .app-header {
-  grid-column: span 10;
   background-color: #282c34;
   display: flex;
   flex-direction: row;
@@ -22,12 +20,20 @@
 }
 
 .app-main {
-  grid-column: span 10;
-  background-color: #f3f5dc;
-  align-items: center;
-  font-size: calc(12px + 1vmin);
+  display: flex;
+  flex-wrap: nowrap;
+  flex: 1 1 200px;
+  justify-content: center;
+  align-items: flex-start;
+  font-size: calc(10px + 1vmin);
   color: #000;
-  padding: 5px;
+  background: #edf3ff;
+  padding: 0px 5px;
+}
+
+.app-content {
+  min-width: 400px;
+  padding: 5px 0px;
 }
 
 @keyframes App-logo-spin {

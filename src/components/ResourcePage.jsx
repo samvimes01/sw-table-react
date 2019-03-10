@@ -10,19 +10,65 @@ import '../styles/ResourcePage.css';
 
 const invisibleFields = ['created', 'edited', 'url'];
 
-// const Table = async (urlArray) => {
-// //   // await Swapi.getResourceByUrl(url);
-//   return 'I need some more time to implement tjis block';
-// };
+const TableLink = ({ urlArray }) => {
+  if (urlArray.length === 0) {
+    return 'No known entries';
+  }
+
+  const [resItemList, setResItemList] = useState([]);
+
+  const getResName = (url) => {
+    const resName = url.match(/\/(\w+)\/\d+\/$/)[1];
+    const id = url.match(/\/(\d+)\/$/)[1];
+    const img = `/img/${resName}/${id}.jpg`;
+
+    return Swapi.getResourceByUrl(url).then((data) => {
+      const title = data.name || data.title;
+      return { img, title, url };
+    });
+  };
+
+  useEffect(() => {
+    if (!resItemList.length) {
+      const promises = [];
+      urlArray.forEach(url => (promises.push(getResName(url))));
+      Promise.all(promises).then((data) => {
+        console.dir(data);
+        setResItemList(data);
+      });
+    }
+  });
+
+  return (
+    resItemList.length <= 0
+      ? 'Loading...'
+      : (
+        <>
+          {resItemList.map(({ img, title, url }) => (
+            <div className="res-field-list-item">
+              <a href={url}><img src={img} alt="resource img" onError={(event) => { event.target.src = '/img/placeholder.jpg'; }} /></a>
+              <a href={url}><span>{title}</span></a>
+            </div>
+          ))}
+        </>
+      )
+  );
+};
 
 const ResourcePage = ({ match }) => {
   const [resource, setResource] = useState([]);
-  let img = '';
+
+  const getParams = (url) => {
+    const resName = url.match(/\/(\w+)\//)[1];
+    const id = url.match(/\/(\d+)/)[1];
+    return { resName, id };
+  };
   // Similar to componentDidMount and componentDidUpdate:
   useEffect(() => {
     if (!resource.length) {
+      const { resName, id } = getParams(match.url);
       // eslint-disable-next-line prefer-destructuring
-      Swapi.getResourceByUrl(match.url.substring(1))
+      Swapi.getResourceById(resName, id)
         .then((result) => {
           if (result.detail === 'Not found') {
             setResource([[match.url, 'page not found']]);
@@ -33,9 +79,9 @@ const ResourcePage = ({ match }) => {
     }
   });
 
+  let img = '';
   if (resource.length > 0) {
-    const resName = match.url.match(/\/(\w+)\//)[1];
-    const id = match.url.match(/\/(\d+)/)[1];
+    const { resName, id } = getParams(match.url);
     img = `/img/${resName}/${id}.jpg`;
   }
 
@@ -55,7 +101,7 @@ const ResourcePage = ({ match }) => {
                       ? (
                         <div className="res-field-list">
                           <div className="res-field-name">{field.replace('_', ' ')}:</div>
-                          <span className="res-field-value">{value}</span>
+                          <div className="res-field-list-items"><TableLink urlArray={value} /></div>
                         </div>
                       )
                       : (
@@ -77,6 +123,9 @@ const ResourcePage = ({ match }) => {
 
 ResourcePage.propTypes = {
   match: PropTypes.object.isRequired,
+};
+TableLink.propTypes = {
+  urlArray: PropTypes.array.isRequired,
 };
 
 export default ResourcePage;

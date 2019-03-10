@@ -13,7 +13,7 @@ const Swapi = {
   ),
 
   getResourceByUrl: resourceUrl => (
-    fetch(BASE_URL + resourceUrl)
+    fetch(resourceUrl)
       .then(data => data.json())
   ),
 

@@ -1,13 +1,12 @@
 .filter {
   color: #464e00;
   font-weight: bold;
-  padding: 10px;
 }
 
 .filter input {
   background:url(/img/border.svg);
   border: none;
-  padding: 0px 2px;
-  height: 20px;
-  margin: 5px 0 10px;
+  padding: 0px 5px;
+  height: 25px;
+  margin: 8px 0 12px;
 }

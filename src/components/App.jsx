@@ -37,11 +37,10 @@ const App = () => {
         </p>
       </header>
 
-      <nav className="app-menu">
-        {<ResourcesNav resources={resources} />}
-      </nav>
-
       <main className="app-main">
+        <nav className="app-menu">
+          {<ResourcesNav resources={resources} />}
+        </nav>
         <section className="app-content">
           <Switch>
             <Route exact path="/" component={Homepage} />

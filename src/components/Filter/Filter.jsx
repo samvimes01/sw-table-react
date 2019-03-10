@@ -16,8 +16,8 @@ const Filter = (props) => {
 
   return (
     <label className="filter">
-      Search:
       <input
+        placeholder="Search:"
         onChange={event => wrapper(event.target.value)}
         defaultValue={query}
       />
@@ -34,5 +34,3 @@ Filter.defaultProps = {
 };
 
 export default Filter;
-// debounce в 16 строке не заработал, хз как поправить
-// {/* onChange={event => debounce(() => onChange(event.target.value), QUERY_CHANGE_DELAY)} */}

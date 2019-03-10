@@ -1,5 +1,4 @@
 .app-menu {
-  grid-column: 1;
 }
 
 .app-menu ul {
@@ -7,8 +6,8 @@
   padding: 0px;
   margin: 0px;
   width: 100%;
-  border-bottom: 4px solid gold;
-  border-left: 4px solid gold;
+  box-shadow: -3px 3px 3px 0px #464e00;
+
 }
 
 .app-menu ul li {
@@ -23,7 +22,7 @@
 }
 
 .app-menu ul li a.active {
-  background: #fbffd3;
-  border: 1px solid #fc7a10;
+  background: #e3eafa;
   border-radius: 5px;
+  box-shadow: 2px 3px 5px 0px #464e00;
 }
