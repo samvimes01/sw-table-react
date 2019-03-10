@@ -10,9 +10,10 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development parcel src/index.html -p 3000 --open",
-    "prebuild": "rmdir dist /s /q",
-    "build": "cross-env NODE_ENV=production parcel build src/index.html --public-url https://samvimes01.github.io/sw-table-react/",
+    "prestart": "del dist\\*.html dist\\*.css dist\\*.js dist\\*.map dist\\*.svg /Q",
+    "start": "cross-env NODE_ENV=development parcel src/index.html  --cert server.crt --key server.key -p 3000",
+    "prebuild": "del dist\\*.html dist\\*.css dist\\*.js dist\\*.map dist\\*.svg /Q",
+    "build": "cross-env NODE_ENV=production parcel build src/index.html",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "test": "eslint src/ --ext .js --ext .jsx"
@@ -20,10 +21,12 @@
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
     "@hot-loader/react-dom": "^16.8.3",
+    "eslint-plugin-react-hooks": "^1.5.0",
     "lodash.debounce": "^4.0.8",
     "prop-types": "^15.7.2",
-    "react": "^16.8.3",
-    "react-dom": "^16.8.3"
+    "react": "^16.8.4",
+    "react-dom": "^16.8.3",
+    "react-router-dom": "^4.3.1"
   },
   "alias": {
     "react-dom": "@hot-loader/react-dom"
@@ -42,6 +45,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.0",
     "gh-pages": "^2.0.1",
-    "parcel-bundler": "^1.11.0"
+    "parcel-bundler": "^1.11.0",
+    "react-hot-loader": "^4.7.2"
   }
 }

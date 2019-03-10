@@ -1,11 +1,18 @@
 import React from 'react';
 import { render } from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 
 import './styles/index.css';
 import App from './components/App';
 
 function renderApp() {
-  render(<App />, document.getElementById('root'));
+  render(
+    <BrowserRouter basename={process.env.ROOT_PATH}>
+      <App />
+    </BrowserRouter>,
+
+    document.getElementById('root'),
+  );
 }
 
 renderApp();
